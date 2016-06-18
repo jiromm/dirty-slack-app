@@ -146,11 +146,11 @@ function slack_command_joke() {
 		'http://i.giphy.com/t9x121JPbkEc8.gif',
 	];
 
-	if (empty($_POST['text']) || $_POST['text'] != 'please') {
-		$message = 'What\'s the magic word?';
-	} else {
+//	if (empty($_POST['text']) || $_POST['text'] != 'please') {
+//		$message = 'What\'s the magic word?';
+//	} else {
 		$message = $bitches[mt_rand(0, count($bitches) - 1)];
-	}
+//	}
 
 	return array(
 		'response_type' => 'in_channel',
