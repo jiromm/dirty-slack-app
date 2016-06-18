@@ -13,9 +13,9 @@
 // Define Slack application identifiers
 // Even better is to put these in environment variables so you don't risk exposing
 // them to the outer world (e.g. by committing to version control)
-define( 'SLACK_CLIENT_ID', 'Paste your client ID here' );
-define( 'SLACK_CLIENT_SECRET', 'Paste your client secret here' );
-define( 'SLACK_COMMAND_TOKEN', 'Paste your command verification token here' );
+define( 'SLACK_CLIENT_ID', '50306003538.50342651873' );
+define( 'SLACK_CLIENT_SECRET', 'aba89cf332a5f98916340aad4a60f649' );
+define( 'SLACK_COMMAND_TOKEN', 'CRoKCU38gFzmPV5O8bVA4JQc' );
 
 // For using libraries through Composer
 require_once 'vendor/autoload.php';
@@ -53,7 +53,7 @@ function initialize_slack_interface() {
 	$slack = new Slack( $access_data );
 
 	// Register slash commands
-	$slack->register_slash_command( '/joke', 'slack_command_joke' );
+	$slack->register_slash_command( '/dirty_bitches', 'slack_command_joke' );
 
 	return $slack;
 }
@@ -120,20 +120,41 @@ function do_action( $slack, $action ) {
  * @return array        A data array to return to Slack
  */
 function slack_command_joke() {
-	$jokes = array(
-		"The box said 'Requires Windows Vista or better.' So I installed LINUX.",
-		"Bugs come in through open Windows.",
-		"Unix is user friendly. It’s just selective about who its friends are.",
-		"Computers are like air conditioners: they stop working when you open Windows.",
-		"I would love to change the world, but they won’t give me the source code.",
-		"Programming today is a race between software engineers striving to build bigger and better idiot-proof programs, and the Universe trying to produce bigger and better idiots. So far, the Universe is winning."
-	);
+	$bitches = [
+		'http://i.giphy.com/Ed3Jpty9JPnPO.gif',
+		'http://i.giphy.com/3o7abAsUDj5cOzuCJ2.gif',
+		'http://i.giphy.com/9n9TI4yi4EkXC.gif',
+		'http://i.giphy.com/xTk9ZLpqvjCb8JG1nG.gif',
+		'http://i.giphy.com/o4yzmqAp9wuBy.gif',
+		'http://i.giphy.com/K0Muoyvf8GSJO.gif',
+		'http://i.giphy.com/qfsmPduiv9Uju.gif',
+		'http://i.giphy.com/AsW6f24WSrG8w.gif',
+		'http://i.giphy.com/B0UnR4nmWMFpK.gif',
+		'http://i.giphy.com/GgyY6X9wk2dsk.gif',
+		'http://i.giphy.com/i17L5UDJugaCA.gif',
+		'http://i.giphy.com/Mc5ddN78OlTmo.gif',
+		'http://i.giphy.com/slhay2qwQCiWs.gif',
+		'http://i.giphy.com/OXJUIgxaX0loI.gif',
+		'http://i.giphy.com/yjf25nyKCbB4I.gif',
+		'http://i.giphy.com/w95g1K9Lu0guY.gif',
+		'http://i.giphy.com/PpMaW39IQzNfO.gif',
+		'http://i.giphy.com/t733NMVDCvB6M.gif',
+		'http://i.giphy.com/uOYwaO5HlLTyM.gif',
+		'http://i.giphy.com/tHWJUanyL2xS8.gif',
+		'http://i.giphy.com/qGiVGk6i3ulpu.gif',
+		'http://i.giphy.com/x4evbMlhpVNCw.gif',
+		'http://i.giphy.com/t9x121JPbkEc8.gif',
+	];
 
-	$joke_number = rand( 0, count( $jokes ) - 1 );
+	if (empty($_POST['text']) || $_POST['text'] != 'please') {
+		$message = 'What\'s the magic word?';
+	} else {
+		$message = $bitches[mt_rand(0, count($bitches) - 1)];
+	}
 
 	return array(
 		'response_type' => 'in_channel',
-		'text' => $jokes[$joke_number],
+		'text' => $message,
 	);
 }
 
@@ -150,7 +171,6 @@ if ( isset( $_REQUEST['action'] ) ) {
 	$action = $_REQUEST['action'];
 	$result_message = do_action( $slack, $action );
 }
-
 
 //
 // PAGE LAYOUT
@@ -183,24 +203,24 @@ if ( isset( $_REQUEST['action'] ) ) {
 	<body>
 		<h1>Slack Integration Example</h1>
 
-		<?php if ( $result_message ) : ?>
+		<?php if ( $result_message ) { ?>
 			<p class="notification">
 				<?php echo $result_message; ?>
 			</p>
-		<?php endif; ?>
+		<?php } ?>
 
-		<?php if ( $slack->is_authenticated() ) : ?>
+		<?php if ( $slack->is_authenticated() ) { ?>
 			<form action="" method="post">
 				<input type="hidden" name="action" value="send_notification"/>
 				<p>
 					<input type="text" name="text" placeholder="Type your notification here and press enter to send." />
 				</p>
 			</form>
-		<?php else : ?>
+		<?php } else { ?>
 			<p>
 				<a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands&client_id=<?php echo $slack->get_client_id(); ?>"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"></a>
 			</p>
-		<?php endif; ?>
+		<?php } ?>
 
 	</body>
 </html>
