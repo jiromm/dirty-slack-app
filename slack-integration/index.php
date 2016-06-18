@@ -146,16 +146,21 @@ function slack_command_joke() {
 		'http://i.giphy.com/t9x121JPbkEc8.gif',
 	];
 
-//	if (empty($_POST['text']) || $_POST['text'] != 'please') {
-//		$message = 'What\'s the magic word?';
-//	} else {
-		$message = $bitches[mt_rand(0, count($bitches) - 1)];
-//	}
+	$message = $bitches[mt_rand(0, count($bitches) - 1)];
 
-	return array(
+	if (!empty($_POST['text']) && $_POST['text'] == 'boobs') {
+		$json = file_get_contents('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=boobs');
+		$json = json_decode($json, true);
+
+		if (isset($json['data']) && isset($json['data']['image_original_url'])) {
+			$message = $json['data']['image_original_url'];
+		}
+	}
+
+	return [
 		'response_type' => 'in_channel',
 		'text' => $message,
-	);
+	];
 }
 
 //
