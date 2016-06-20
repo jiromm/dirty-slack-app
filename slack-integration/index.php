@@ -53,7 +53,8 @@ function initialize_slack_interface() {
 	$slack = new Slack( $access_data );
 
 	// Register slash commands
-	$slack->register_slash_command( '/dirty_bitches', 'slack_command_joke' );
+	$slack->register_slash_command('/dirty_bitches', 'fn_dirty_bitches');
+	$slack->register_slash_command('/showme', 'fn_showme');
 
 	return $slack;
 }
@@ -119,7 +120,7 @@ function do_action( $slack, $action ) {
  *
  * @return array        A data array to return to Slack
  */
-function slack_command_joke() {
+function fn_dirty_bitches() {
 	$bitches = [
 		'http://i.giphy.com/Ed3Jpty9JPnPO.gif',
 		'http://i.giphy.com/3o7abAsUDj5cOzuCJ2.gif',
@@ -152,7 +153,25 @@ function slack_command_joke() {
 		$json = file_get_contents('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=boobs');
 		$json = json_decode($json, true);
 
-		if (isset($json['data']) && isset($json['data']['image_original_url'])) {
+		if (isset($json['data']['image_original_url'])) {
+			$message = $json['data']['image_original_url'];
+		}
+	}
+
+	return [
+		'response_type' => 'in_channel',
+		'text' => $message,
+	];
+}
+
+function fn_showme() {
+	$message = 'Internal Server Error :p';
+
+	if (!empty($_POST['text'])) {
+		$json = file_get_contents('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=' . urlencode($_POST['text']));
+		$json = json_decode($json, true);
+
+		if (isset($json['data']['image_original_url'])) {
 			$message = $json['data']['image_original_url'];
 		}
 	}
